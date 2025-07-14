@@ -1,37 +1,66 @@
-package configure
+package sleepytime
 
 import (
-	"fmt"
-	"math/rand"
 	"time"
-
-	"github.com/go-vgo/robotgo"
 )
 
-type GhostConfig struct {
-	Repetitions int
-	Delay       time.Duration
-	Keys        []string
-	MoveMouse   bool
+const (
+	DefaultRunDuration     = 10 * time.Minute
+	DefaultDelay           = 1 * time.Second
+	DefaultKeys            = "a,b,enter,space"
+	DefaultMoveMouse       = true
+	DefaultTerminationKeys = "ctrl,alt,q"
+)
+
+type Config struct {
+	RunDuration     time.Duration
+	Delay           time.Duration
+	Keys            []string
+	MoveMouse       bool
+	TerminationKeys []string
 }
 
-func RunGhostActions(cfg GhostConfig) {
-
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	screenWidth, screenHeight := robotgo.GetScreenSize()
-
-	for i := 0; i < cfg.Repetitions; i++ {
-		if cfg.MoveMouse {
-			x := r.Intn(screenWidth)
-			y := r.Intn(screenHeight)
-			robotgo.MoveMouse(x, y)
-		}
-
-		key := cfg.Keys[r.Intn(len(cfg.Keys))]
-		robotgo.KeyTap(key)
-
-		fmt.Println("key tap:", key)
-
-		time.Sleep(cfg.Delay)
+func (c *Config) SetDefaults() {
+	if c.RunDuration == 0 {
+		c.RunDuration = DefaultRunDuration
 	}
+	if c.Delay == 0 {
+		c.Delay = DefaultDelay
+	}
+	if len(c.Keys) == 0 {
+		c.Keys = []string{"a", "b", "enter", "space"}
+	}
+
+	if !c.MoveMouse {
+		c.MoveMouse = DefaultMoveMouse
+	}
+	if len(c.TerminationKeys) == 0 {
+		c.TerminationKeys = []string{"ctrl", "alt", "q"}
+	}
+}
+
+func NewConfig() Config {
+	cfg := Config{}
+	cfg.SetDefaults()
+	return cfg
+}
+
+func (c *Config) SetRunDuration(duration time.Duration) {
+	c.RunDuration = duration
+}
+
+func (c *Config) SetDelay(delay time.Duration) {
+	c.Delay = delay
+}
+
+func (c *Config) SetKeys(keys []string) {
+	c.Keys = keys
+}
+
+func (c *Config) SetMoveMouse(move bool) {
+	c.MoveMouse = move
+}
+
+func (c *Config) SetTerminationKeys(keys []string) {
+	c.TerminationKeys = keys
 }
