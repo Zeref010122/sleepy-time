@@ -44,6 +44,9 @@ func Run(cfg Config) {
 				x := r.Intn(screenWidth)
 				y := r.Intn(screenHeight)
 				robotgo.Move(x, y)
+				if cfg.ClickMouse {
+					robotgo.Click()
+				}
 			}
 
 			if len(cfg.Keys) > 0 {

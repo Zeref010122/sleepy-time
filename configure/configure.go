@@ -10,6 +10,7 @@ const (
 	DefaultKeys            = "a,b,enter,space"
 	DefaultMoveMouse       = true
 	DefaultTerminationKeys = "ctrl,alt,q"
+	DefaultClickMouse      = false
 )
 
 type Config struct {
@@ -17,6 +18,7 @@ type Config struct {
 	Delay           time.Duration
 	Keys            []string
 	MoveMouse       bool
+	ClickMouse      bool
 	TerminationKeys []string
 }
 
@@ -36,6 +38,9 @@ func (c *Config) SetDefaults() {
 	}
 	if len(c.TerminationKeys) == 0 {
 		c.TerminationKeys = []string{"ctrl", "alt", "q"}
+	}
+	if !c.ClickMouse {
+		c.ClickMouse = DefaultClickMouse
 	}
 }
 
@@ -63,4 +68,8 @@ func (c *Config) SetMoveMouse(move bool) {
 
 func (c *Config) SetTerminationKeys(keys []string) {
 	c.TerminationKeys = keys
+}
+
+func (c *Config) SetClickMouse(click bool) {
+	c.ClickMouse = click
 }
